@@ -51,7 +51,7 @@ In Shopify admin:
 1. **Products > Add product:** name it "StreamPros". Under Shipping, untick "This is a physical
    product". Add an option "Plan" with two variants:
    - **Monthly** at $5.00
-   - **Lifetime** at $35.00
+   - **Lifetime** at $60.00
 2. Install the free **Shopify Subscriptions** app. Create a plan: deliver and bill every 1 month,
    for the **Monthly** variant only.
 3. Find the IDs and put them in `wrangler.toml` under `[vars]`:

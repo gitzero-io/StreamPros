@@ -351,7 +351,7 @@
     <string name="plan_monthly_price">$5 / महीना</string>
     <string name="plan_monthly_note">कभी भी रद्द करें</string>
     <string name="plan_lifetime">लाइफ़टाइम</string>
-    <string name="plan_lifetime_price">$35 एक बार</string>
+    <string name="plan_lifetime_price">$60 एक बार</string>
     <string name="plan_lifetime_note">एक बार भुगतान करें, हमेशा के लिए आपका</string>
     <string name="btn_start_trial">12 घंटे का मुफ़्त ट्रायल शुरू करें</string>
     <string name="trial_used">यह डिवाइस अपना मुफ़्त ट्रायल पहले ही इस्तेमाल कर चुका है।</string>

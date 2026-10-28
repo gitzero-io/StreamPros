@@ -355,7 +355,7 @@
     <string name="plan_monthly_price">5 $ / mois</string>
     <string name="plan_monthly_note">Résiliable à tout moment</string>
     <string name="plan_lifetime">À vie</string>
-    <string name="plan_lifetime_price">35 $ une fois</string>
+    <string name="plan_lifetime_price">60 $ une fois</string>
     <string name="plan_lifetime_note">Payez une fois, gardez-le pour toujours</string>
     <string name="btn_start_trial">ESSAI GRATUIT DE 12 HEURES</string>
     <string name="trial_used">Cet appareil a déjà utilisé son essai gratuit.</string>

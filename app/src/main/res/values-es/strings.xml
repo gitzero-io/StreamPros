@@ -355,7 +355,7 @@
     <string name="plan_monthly_price">$5 / mes</string>
     <string name="plan_monthly_note">Cancela cuando quieras</string>
     <string name="plan_lifetime">De por vida</string>
-    <string name="plan_lifetime_price">$35 una vez</string>
+    <string name="plan_lifetime_price">$60 una vez</string>
     <string name="plan_lifetime_note">Paga una vez, tuyo para siempre</string>
     <string name="btn_start_trial">PRUEBA GRATIS DE 12 HORAS</string>
     <string name="trial_used">Este dispositivo ya usó su prueba gratis.</string>

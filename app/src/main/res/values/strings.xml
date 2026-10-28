@@ -370,7 +370,7 @@
     <string name="plan_monthly_price">$5 / month</string>
     <string name="plan_monthly_note">Cancel any time</string>
     <string name="plan_lifetime">Lifetime</string>
-    <string name="plan_lifetime_price">$35 once</string>
+    <string name="plan_lifetime_price">$60 once</string>
     <string name="plan_lifetime_note">Pay once, keep it forever</string>
     <string name="btn_start_trial">START 12-HOUR FREE TRIAL</string>
     <string name="trial_used">This device has already used its free trial.</string>

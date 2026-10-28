@@ -1,7 +1,7 @@
 # StreamPros (paid StreamPros Hub, Android TV, Kotlin + Compose for TV)
 
 The paid version of the free StreamPros Hub (~/AndroidStudioProjects/HUB): the same app behind a
-paywall ($5/month or $35 lifetime through the Shopify store https://streampros.shop) with a
+paywall ($5/month or $60 lifetime through the Shopify store https://streampros.shop) with a
 12-hour free trial. server/ is its license server (Cloudflare Worker + D1, see server/README.md).
 
 ## Build and verify
