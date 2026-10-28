@@ -1,0 +1,27 @@
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+.kotlin
+__pycache__/
+/dist/
+# Release signing key: never commit
+*.jks
+*.keystore
+streampros-keystore.properties
+# License server: dependencies, local state, and the members-only catalog (never committed)
+server/node_modules/
+server/.wrangler/
+server/catalog/
+server/.dev.vars

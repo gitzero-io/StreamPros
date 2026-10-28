@@ -1,0 +1,398 @@
+<resources>
+    <string name="app_name" translatable="false">StreamPros</string>
+
+    <!-- Language picker (first launch and Settings) -->
+    <string name="language_title">Choose your language</string>
+    <string name="language_title_all" translatable="false">Elige tu idioma · Choisissez votre langue · Sprache wählen · अपनी भाषा चुनें</string>
+
+    <!-- Buttons -->
+    <string name="btn_continue">CONTINUE</string>
+    <string name="btn_not_now">NOT NOW</string>
+    <string name="btn_cancel">CANCEL</string>
+    <string name="btn_done">DONE</string>
+    <string name="btn_ok">OK</string>
+    <string name="btn_open">OPEN</string>
+    <string name="btn_start">START</string>
+    <string name="btn_reset">RESET</string>
+    <string name="btn_change">CHANGE</string>
+
+    <!-- Nav bar and categories -->
+    <string name="nav_home">Home</string>
+    <string name="nav_trending">Trending</string>
+    <string name="nav_settings">Settings</string>
+    <string name="cd_search">Search</string>
+    <string name="category_movies">Movies</string>
+    <string name="category_shows">Shows</string>
+    <string name="category_sports">Sports</string>
+    <string name="category_live_tv">Live TV</string>
+    <string name="category_anime">Anime</string>
+    <string name="category_latin" translatable="false">Español</string>
+    <string name="category_player">Player</string>
+    <string name="category_media_client">Media Client</string>
+    <string name="category_iptv_player">IPTV Player</string>
+
+    <!-- Setup guide -->
+    <string name="setup_step_count">STEP %1$d OF %2$d</string>
+    <string name="step_welcome_title">Welcome</string>
+    <string name="step_welcome_guide">Hi there! I\'ll help you get your TV ready in a few quick steps.</string>
+    <string name="step_remote_title">Remote basics</string>
+    <string name="step_remote_guide">You only need the arrows, the middle button and Back. That\'s it!</string>
+    <string name="step_permission_title">Allow installs</string>
+    <string name="step_permission_guide">To add apps for you, your TV needs to trust this app. You only do this once.</string>
+    <string name="step_interests_title">Pick interests</string>
+    <string name="step_interests_guide">What do you like to watch? Pick as many as you want.</string>
+    <string name="step_install_title">Get your apps</string>
+    <string name="step_install_guide">Here are apps that match your picks. Get the ones you want, or skip for now.</string>
+    <string name="step_done_title">All set</string>
+    <string name="step_done_guide">You\'re ready! You can always add more apps from the home screen.</string>
+    <string name="welcome_heading">Welcome to StreamPros</string>
+    <string name="welcome_body">Let\'s set up your apps. It only takes a minute.</string>
+    <string name="btn_lets_go">LET\'S GO</string>
+    <string name="remote_heading">Your remote</string>
+    <string name="remote_arrows">Arrows</string>
+    <string name="remote_arrows_desc">Move around the screen</string>
+    <string name="remote_ok">Middle button (OK)</string>
+    <string name="remote_ok_desc">Choose what\'s highlighted</string>
+    <string name="remote_back">Back</string>
+    <string name="remote_back_desc">Go back one step</string>
+    <string name="remote_home">Home</string>
+    <string name="remote_home_desc">Go to your TV\'s home screen</string>
+    <string name="permission_heading">Allow installs</string>
+    <string name="permission_done">Done! StreamPros can now install apps.</string>
+    <string name="permission_no_settings">This TV doesn\'t have that setting. You can skip for now.</string>
+    <string name="permission_instructions">Choose Open settings, find StreamPros in the list and turn it on, then press Back.</string>
+    <string name="btn_open_settings">OPEN SETTINGS</string>
+    <string name="btn_skip_for_now">SKIP FOR NOW</string>
+    <string name="interests_heading">What do you like?</string>
+    <string name="interests_pick_one">Pick at least one to continue.</string>
+    <plurals name="interests_picked">
+        <item quantity="one">%d picked</item>
+        <item quantity="other">%d picked</item>
+    </plurals>
+    <string name="install_heading">Apps for you</string>
+    <string name="install_empty">No apps for those picks yet.</string>
+    <string name="done_heading">You\'re all set!</string>
+    <string name="done_picks">Your picks: %1$s</string>
+    <string name="btn_back_to_settings">BACK TO SETTINGS</string>
+    <string name="btn_start_watching">START WATCHING</string>
+
+    <!-- After an install -->
+    <string name="installed_label">INSTALLED</string>
+    <string name="installed_ready">It\'s ready to watch. Open it now?</string>
+    <string name="btn_open_now">OPEN NOW</string>
+    <string name="btn_later">LATER</string>
+    <string name="updated_label">UPDATED</string>
+    <string name="updated_version">You\'re now on version %1$s.</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_guided">Guided Installation</string>
+    <string name="settings_guided_desc">Walk through setup again and get apps for your picks.</string>
+    <string name="settings_hide_mature">Hide 18+ apps</string>
+    <string name="settings_hide_mature_on">On: apps marked 18+ are hidden everywhere in the Hub.</string>
+    <string name="settings_hide_mature_off">Off: apps marked 18+ are shown with an 18+ label.</string>
+    <string name="btn_turn_on">TURN ON</string>
+    <string name="btn_turn_off">TURN OFF</string>
+    <string name="settings_catalog">Catalog info</string>
+    <string name="settings_about">About</string>
+    <string name="settings_about_desc">Version, what the Hub does, the disclaimer and privacy.</string>
+    <string name="settings_reset">Reset app data</string>
+    <string name="settings_reset_desc">Clears favorites, recently opened apps, your picks, settings and setup. Installed apps stay.</string>
+    <string name="reset_title">Reset app data?</string>
+    <string name="reset_body">Favorites, recently opened apps, your picks and settings are cleared, and setup starts again. Apps you installed stay on your TV.</string>
+    <plurals name="catalog_apps">
+        <item quantity="one">%d app</item>
+        <item quantity="other">%d apps</item>
+    </plurals>
+    <string name="catalog_apps_on_tv">%1$d apps, %2$d work on this TV</string>
+    <string name="catalog_updated">updated %1$s</string>
+    <string name="catalog_trending">trending %1$s</string>
+    <string name="app_version">%1$s (build %2$d)</string>
+    <string name="version_unknown">Unknown</string>
+
+    <!-- Hub update -->
+    <string name="update_title">Hub update</string>
+    <string name="update_not_configured">You\'re on StreamPros %1$s. The update link isn\'t set yet.</string>
+    <string name="update_available">StreamPros %1$s is available.</string>
+    <string name="update_available_notes">StreamPros %1$s is available: %2$s</string>
+    <string name="update_checking">Checking for updates…</string>
+    <string name="update_latest">You\'re on the latest version, %1$s.</string>
+    <string name="update_current">You\'re on StreamPros %1$s.</string>
+    <string name="btn_install_update">INSTALL UPDATE</string>
+    <string name="btn_check">CHECK</string>
+    <string name="btn_checking">CHECKING</string>
+
+    <!-- App action button and status -->
+    <string name="action_installing">INSTALLING</string>
+    <string name="action_try_again">TRY AGAIN</string>
+    <string name="action_update">UPDATE</string>
+    <string name="action_get_app">GET APP</string>
+    <string name="status_downloading_percent">Downloading %1$d%%</string>
+    <string name="status_downloading">Downloading…</string>
+    <string name="status_confirm">Confirm the install on screen</string>
+    <string name="status_update_available">Update available</string>
+    <string name="status_update_available_version">Update available (v%1$s)</string>
+    <string name="status_installed">Installed</string>
+    <string name="status_not_installed">Not installed</string>
+
+    <!-- Download and install problems -->
+    <string name="error_offline">No internet connection. Check your TV\'s network, then try again.</string>
+    <string name="error_timeout">The download timed out. Check your connection, then try again.</string>
+    <string name="error_download_failed">Download failed</string>
+    <string name="error_server">Server returned %1$d</string>
+    <string name="error_no_link">No valid https download link is set for this app</string>
+    <string name="error_allow_installs">Allow installs from this app, press Back, then try again</string>
+    <string name="error_no_permission_screen">Could not open the install permission screen</string>
+    <string name="error_hash">File check failed, download not trusted</string>
+    <string name="error_space">Not enough space on this TV: needs about %1$d MB, %2$d MB free. Uninstall apps you don\'t use, then try again.</string>
+    <string name="error_space_unknown">This TV ran out of space. Uninstall apps you don\'t use, then try again.</string>
+    <string name="error_interrupted">The download stopped. Try again to continue where it left off.</string>
+    <string name="error_not_valid_app">Downloaded file is not a valid app</string>
+    <string name="error_different_app">Download is a different app, not installed</string>
+    <string name="error_signature">App signature doesn\'t match, download not trusted</string>
+    <string name="error_install_cancelled">Install cancelled</string>
+    <string name="error_install_failed">Install failed</string>
+    <string name="error_own_signature">Can\'t read this app\'s signature, so updates can\'t be verified.</string>
+    <string name="error_update_not_ours">This update isn\'t signed by StreamPros. It won\'t be installed.</string>
+    <string name="error_update_android">This update needs a newer Android version than this TV has.</string>
+    <string name="error_update_check">Couldn\'t check for updates. Check the connection and try again.</string>
+    <string name="uninstall_failed">Could not open the uninstall screen</string>
+
+    <!-- App Detail, report and uninstall -->
+    <string name="detail_more">▾ more</string>
+    <string name="detail_more_up">▾ more (press Up to read)</string>
+    <string name="detail_version">Version %1$s</string>
+    <string name="version_short" translatable="false">v%1$s</string>
+    <string name="btn_favorite">FAVORITE</string>
+    <string name="btn_report">REPORT</string>
+    <string name="btn_uninstall">UNINSTALL</string>
+    <string name="cd_report">Report a problem with %1$s</string>
+    <string name="cd_uninstall">Uninstall %1$s</string>
+    <string name="cd_favorite">Favorite</string>
+    <string name="report_label">REPORT A PROBLEM</string>
+    <string name="report_question">What\'s going wrong?</string>
+    <string name="report_crash">App crashes / won\'t open</string>
+    <string name="report_install">Failed download / install</string>
+    <string name="report_version">Incorrect version / needs update</string>
+    <string name="report_playback">Content won\'t play</string>
+    <string name="report_other">Other</string>
+    <string name="report_thanks">Thanks for the report.</string>
+
+    <!-- Home -->
+    <string name="card_open">Open</string>
+    <string name="card_get_app">Get app</string>
+    <string name="card_update">Update</string>
+    <string name="card_update_to">Update to v%1$s</string>
+    <string name="shelf_updates">Updates</string>
+    <string name="update_all">Update all</string>
+    <string name="update_all_running">Updating %1$d of %2$d</string>
+    <string name="update_all_stop">Press OK to stop after this app</string>
+    <plurals name="update_all_note">
+        <item quantity="one">%1$d app, one after another</item>
+        <item quantity="other">%1$d apps, one after another</item>
+    </plurals>
+    <string name="shelf_my_apps">My Apps</string>
+    <string name="shelf_favorites">Favorites</string>
+    <string name="shelf_trending">Trending This Week</string>
+    <string name="shelf_recently_updated">Recently Updated</string>
+    <string name="shelf_recent_note">Last 2 weeks</string>
+    <string name="shelf_updated">Updated %1$s</string>
+    <string name="shelf_browse">Browse</string>
+    <string name="tag_featured">FEATURED</string>
+    <string name="tag_trending">TRENDING</string>
+    <string name="tag_new">NEW</string>
+    <string name="hero_installed">Installed · press OK to open</string>
+    <string name="hero_get">Press OK to get it</string>
+    <string name="category_empty">No apps added yet.</string>
+    <string name="trending_empty">Nothing trending yet.</string>
+
+    <!-- Disclaimer (Home card and About) -->
+    <string name="disclaimer_title">Disclaimer</string>
+    <string name="disclaimer_read">Press OK to read ▾</string>
+    <string name="disclaimer_close">Press OK to close ▴</string>
+    <string name="disclaimer_short">StreamPros doesn\'t provide, stream or host any content. Apps are made by independent developers.</string>
+    <string name="disclaimer_what_title">What the Hub does</string>
+    <string name="disclaimer_what_body">StreamPros is an app launcher and installer for Android TV devices. It helps you find, install, and open apps. StreamPros does not provide, stream, or host any movies, TV shows, sports, or channels.</string>
+    <string name="disclaimer_third_title">Third-party apps</string>
+    <string name="disclaimer_third_body">Apps listed here are made by independent developers. StreamPros is not affiliated with, endorsed by, or sponsored by those developers or by any streaming service or content owner.</string>
+    <string name="disclaimer_you_title">Your responsibility</string>
+    <string name="disclaimer_you_body">You are responsible for using any app and its content lawfully, and only where you have the right to access it.</string>
+    <string name="disclaimer_rights_title">Rights holders</string>
+    <string name="disclaimer_rights_body">If you believe an app listed here infringes your rights, email %1$s with the app name and details of your claim.</string>
+
+    <!-- About -->
+    <string name="about_title">About StreamPros</string>
+    <string name="about_more_down">▾ more (press Down to read)</string>
+    <string name="privacy_title">Privacy</string>
+    <string name="privacy_body">No accounts, ads, tracking or analytics. The Hub only goes online to download the apps you choose and to check for Hub updates and an updated app list. Searches stay on this TV; voice search uses your TV\'s own speech service.</string>
+
+    <!-- Search -->
+    <string name="search_hint">Search apps, like \"sports\" or \"movies\"</string>
+    <string name="cd_search_apps">Search apps</string>
+    <string name="search_listening">Listening…</string>
+    <plurals name="search_count">
+        <item quantity="one">%d app</item>
+        <item quantity="other">%d apps</item>
+    </plurals>
+    <string name="search_no_match">No apps match \"%1$s\"</string>
+    <string name="search_try">Try a shorter word, or look through the categories.</string>
+    <string name="btn_browse_categories">BROWSE CATEGORIES</string>
+    <string name="search_pick_category">Pick a category</string>
+    <string name="categories_title">Browse categories</string>
+    <string name="cd_voice_search">Search by voice</string>
+    <string name="cd_stop_listening">Stop listening</string>
+    <string name="voice_label">VOICE SEARCH</string>
+    <string name="voice_title">Search with your voice</string>
+    <string name="voice_body">Press the mic and say an app name or a kind of app. The Hub listens only while the mic is on and doesn\'t keep recordings. Your TV will ask if the Hub can use the microphone.</string>
+    <string name="voice_mic_blocked">Microphone access is off. Turn it on in Settings > Apps > StreamPros, or keep typing.</string>
+    <string name="voice_mic_declined">No problem. You can type your search instead.</string>
+    <string name="voice_no_match">Didn\'t catch that. Press the mic to try again.</string>
+    <string name="voice_busy">Voice search is busy. Try again in a moment.</string>
+    <string name="voice_unavailable">Voice search isn\'t available right now. You can still type.</string>
+    <string name="voice_stopped">Voice search stopped. Press the mic to try again.</string>
+
+    <!-- Close running apps -->
+    <string name="close_title">Close running apps</string>
+    <string name="close_desc">CLOSE BACKGROUND APPS ends the Hub\'s apps that are idle in the background. To fully stop one, press FORCE STOP, then Force stop on its App info page.</string>
+    <string name="close_desc_manual">This TV runs Android 14 or newer, which doesn\'t let the Hub close other apps. Press FORCE STOP, then Force stop on the app\'s App info page.</string>
+    <string name="btn_close_background">CLOSE BACKGROUND APPS</string>
+    <string name="btn_force_stop">FORCE STOP</string>
+    <string name="cd_force_stop">Force stop %1$s</string>
+    <string name="close_info_failed">Could not open App info for %1$s</string>
+    <string name="close_none">None of the Hub\'s apps are installed.</string>
+    <string name="close_card">Close apps</string>
+    <string name="close_card_note">Stop apps running in the background</string>
+    <string name="settings_close_desc">Stop the Hub\'s apps that are still running, to free up memory.</string>
+    <plurals name="close_done">
+        <item quantity="one">Asked Android to close %d app in the background.</item>
+        <item quantity="other">Asked Android to close %d apps in the background.</item>
+    </plurals>
+    <string name="storage_title">Storage</string>
+    <string name="storage_free">%1$s free of %2$s on this TV</string>
+    <string name="storage_desc">Catalog apps on this TV, biggest first. Sizes are the app files; APP INFO shows data and cache and can clear them.</string>
+    <string name="storage_none">No catalog apps are installed.</string>
+    <string name="settings_storage_desc">See how much space each app takes and uninstall the ones you don\'t use</string>
+    <string name="btn_app_info">APP INFO</string>
+    <string name="cd_app_info">App info for %1$s</string>
+    <string name="settings_free_space">Free up space</string>
+    <string name="free_space_desc">Downloads the Hub kept: %1$s</string>
+    <string name="free_space_none">No leftover downloads</string>
+    <string name="free_space_done">Cleared %1$s</string>
+    <string name="btn_clear">CLEAR</string>
+    <string name="settings_pin">Install PIN</string>
+    <string name="pin_on_desc">On: installing, updating or uninstalling apps and Reset need the PIN</string>
+    <string name="pin_off_desc">Off: anyone can install or uninstall apps</string>
+    <string name="btn_set_pin">SET PIN</string>
+    <string name="pin_enter">Enter PIN</string>
+    <string name="pin_new">Choose a 4-digit PIN</string>
+    <string name="pin_confirm">Enter the PIN again</string>
+    <string name="pin_wrong">Wrong PIN. Try again.</string>
+    <string name="pin_mismatch">The PINs didn\'t match. Choose a PIN again.</string>
+    <string name="pin_hint">Use the keys on screen or the number keys on your remote</string>
+    <string name="cd_delete">Delete</string>
+    <string name="favorites_move_hint">Hold OK on a favorite to move it</string>
+    <string name="favorites_moving">◀ ▶ to move, OK when done</string>
+    <string name="favorites_move_arrows">◀ Move ▶</string>
+    <string name="whats_new">What\'s new</string>
+
+    <!-- Troubleshoot checkup -->
+    <string name="troubleshoot_title">Troubleshoot</string>
+    <string name="settings_troubleshoot_desc">Check your internet, storage, Hub and apps, and fix what\'s wrong</string>
+    <string name="troubleshoot_desc">Run a checkup to find what\'s stopping apps from installing or working well. Select a row to fix it.</string>
+    <string name="btn_run_checkup">RUN CHECKUP</string>
+    <string name="btn_check_again">CHECK AGAIN</string>
+    <string name="btn_allow">ALLOW</string>
+    <string name="btn_free_space">FREE UP SPACE</string>
+    <string name="btn_open_storage">OPEN STORAGE</string>
+    <string name="btn_close_apps">CLOSE APPS</string>
+    <string name="btn_update_all">UPDATE ALL</string>
+    <string name="btn_network_settings">NETWORK SETTINGS</string>
+    <string name="btn_date_settings">DATE &amp; TIME</string>
+    <string name="check_running">Checking your TV…</string>
+    <string name="check_all_good">Everything looks good!</string>
+    <string name="check_checking">Checking…</string>
+    <string name="check_unknown">Couldn\'t check this</string>
+    <string name="check_needs_internet">Connect to the internet to check this</string>
+    <string name="check_fix_failed">Your TV doesn\'t have that settings screen. Open it from your TV\'s Settings.</string>
+    <string name="check_internet">Internet</string>
+    <string name="check_clock">Date and time</string>
+    <string name="check_hub">StreamPros</string>
+    <string name="check_catalog">App list</string>
+    <string name="check_permission">Install permission</string>
+    <string name="check_storage">Storage</string>
+    <string name="check_memory">Memory</string>
+    <string name="check_updates">App updates</string>
+    <string name="check_sources">App sources</string>
+    <string name="check_device">This device</string>
+    <string name="check_internet_off">No internet connection. Check Wi-Fi or the network cable.</string>
+    <string name="check_internet_connected">Connected</string>
+    <string name="check_internet_secure">Connected, but secure downloads fail. This is usually a wrong date or time on the TV.</string>
+    <string name="check_internet_unreachable">Connected to a network, but the download server can\'t be reached. Restart your router or try again later.</string>
+    <string name="check_internet_slow">Connected, but slow (%1$.1f s to reach the download server). Downloads may take a while.</string>
+    <string name="check_internet_ok">Connected, and the download server is reachable</string>
+    <string name="check_clock_unknown">Couldn\'t compare with the internet time</string>
+    <string name="check_clock_suspect">The date or time may be wrong. Turn on automatic date and time.</string>
+    <string name="check_clock_wrong">The TV\'s clock is wrong, which breaks secure downloads. Turn on automatic date and time.</string>
+    <string name="check_clock_ok">Correct</string>
+    <string name="check_hub_version">Version %1$s</string>
+    <string name="check_hub_update">Version %1$s is available (you have %2$s)</string>
+    <string name="check_hub_latest">Up to date (%1$s)</string>
+    <string name="check_hub_unknown">Couldn\'t check for a newer Hub (you have %1$s)</string>
+    <string name="check_catalog_count">Apps in the list: %1$d</string>
+    <string name="check_catalog_updated">Just updated to the newest list. Apps in the list: %1$d</string>
+    <string name="check_catalog_latest">Up to date. Apps in the list: %1$d</string>
+    <string name="check_catalog_unknown">Couldn\'t check for a newer list. Apps in the list: %1$d</string>
+    <string name="check_permission_ok">The Hub is allowed to install apps</string>
+    <string name="check_permission_off">The Hub isn\'t allowed to install apps yet</string>
+    <string name="check_storage_low">Only %1$s free. Apps may fail to download or update.</string>
+    <string name="check_storage_leftovers">%1$s free. Old downloads use %2$s and can be cleared.</string>
+    <string name="check_storage_ok">%1$s free</string>
+    <string name="check_memory_low">Memory is low (%1$s free of %2$s). Closing apps you aren\'t using can make things smoother.</string>
+    <string name="check_memory_ok">%1$s free of %2$s</string>
+    <string name="check_apps_none">No apps from the Hub are installed yet</string>
+    <string name="check_updates_ok">All installed apps are up to date (%1$d)</string>
+    <string name="check_updates_some">Updates ready (%1$d): %2$s</string>
+    <string name="check_sources_ok">The Hub can update all your apps</string>
+    <string name="check_sources_other">Installed from somewhere else, so the Hub can\'t update them: %1$s. Uninstall, then get them again from the Hub.</string>
+    <string name="check_device_64">64-bit</string>
+    <string name="check_device_32">32-bit</string>
+    <string name="check_device_detail">%1$s · Android %2$s · %3$s · %4$d of %5$d Hub apps work here</string>
+    <plurals name="check_problems">
+        <item quantity="one">%d thing needs attention</item>
+        <item quantity="other">%d things need attention</item>
+    </plurals>
+
+    <!-- Paywall and membership (License.kt, Paywall.kt) -->
+    <string name="paywall_title">Unlock StreamPros</string>
+    <string name="paywall_body">Find, install, update and open your TV apps in one place, all with your remote.</string>
+    <string name="plan_monthly">Monthly</string>
+    <string name="plan_monthly_price">$5 / month</string>
+    <string name="plan_monthly_note">Cancel any time</string>
+    <string name="plan_lifetime">Lifetime</string>
+    <string name="plan_lifetime_price">$35 once</string>
+    <string name="plan_lifetime_note">Pay once, keep it forever</string>
+    <string name="btn_start_trial">START 12-HOUR FREE TRIAL</string>
+    <string name="trial_used">This device has already used its free trial.</string>
+    <string name="trial_ip_limit">Free trials on this internet connection are used up for now. Choose a plan to continue.</string>
+    <string name="btn_already_paid">I ALREADY PAID</string>
+    <string name="paywall_scan">Scan with your phone to pay %1$s</string>
+    <string name="paywall_device_code">Device code: %1$s</string>
+    <string name="paywall_auto">This screen unlocks on its own a few seconds after you pay.</string>
+    <string name="paywall_checking">Checking your membership…</string>
+    <string name="paywall_offline_title">Can\'t reach StreamPros</string>
+    <string name="paywall_offline_body">Check your internet connection, then try again.</string>
+    <string name="claim_title">Unlock with your order</string>
+    <string name="claim_body">Enter the order number and email from your StreamPros order confirmation.</string>
+    <string name="claim_order_hint">Order number, e.g. 1042</string>
+    <string name="claim_email_hint">Email</string>
+    <string name="btn_unlock">UNLOCK</string>
+    <string name="claim_failed">No unused order matches that number and email. Check them and try again.</string>
+    <string name="cd_checkout_qr">QR code for checkout</string>
+    <string name="settings_membership">Membership</string>
+    <string name="membership_lifetime">Lifetime. Thanks for your support!</string>
+    <string name="membership_monthly">Monthly, paid through %1$s.</string>
+    <string name="membership_cancel_hint">To cancel, use the link in your order email.</string>
+    <string name="membership_trial">Free trial, ends %1$s</string>
+    <string name="btn_see_plans">SEE PLANS</string>
+</resources>
