@@ -352,7 +352,7 @@
     <string name="paywall_title">Débloquez StreamPros</string>
     <string name="paywall_body">Trouvez, installez, mettez à jour et ouvrez vos applis TV au même endroit, avec votre télécommande.</string>
     <string name="plan_monthly">Mensuel</string>
-    <string name="plan_monthly_price">5 $ / mois</string>
+    <string name="plan_monthly_price">15 $ / mois</string>
     <string name="plan_monthly_note">Résiliable à tout moment</string>
     <string name="plan_lifetime">À vie</string>
     <string name="plan_lifetime_price">60 $ une fois</string>

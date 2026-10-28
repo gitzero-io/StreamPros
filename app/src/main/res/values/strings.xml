@@ -367,7 +367,7 @@
     <string name="paywall_title">Unlock StreamPros</string>
     <string name="paywall_body">Find, install, update and open your TV apps in one place, all with your remote.</string>
     <string name="plan_monthly">Monthly</string>
-    <string name="plan_monthly_price">$5 / month</string>
+    <string name="plan_monthly_price">$15 / month</string>
     <string name="plan_monthly_note">Cancel any time</string>
     <string name="plan_lifetime">Lifetime</string>
     <string name="plan_lifetime_price">$60 once</string>
