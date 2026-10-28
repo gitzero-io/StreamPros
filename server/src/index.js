@@ -2,17 +2,21 @@
 //
 // The app asks here whether its device is unlocked (paid or in the 12-hour trial) and gets a
 // signed license back. Shopify tells it about purchases through webhooks. The catalog (static
-// assets in ./catalog) is only served to devices holding a valid license.
+// assets in ./catalog) is only served to devices holding a valid license. Trial devices get
+// catalog/trial/, the same catalog without download links: /v1/install hands those out one app at
+// a time, FREE_INSTALLS apps per trial. The links live in catalog/private/links.json, never served.
 //
 //   POST /v1/status   {device}                 this device's state (creates the device on first call)
 //   POST /v1/trial    {device}                 starts the free trial if this device and IP may
 //   POST /v1/claim    {device, order, email}   links an order paid without the device code
+//   POST /v1/install  {device, package}        the download link for one app
 //   GET  /v1/catalog/<file>                    catalog files, with "Authorization: Bearer <license>"
 //   GET  /buy/<monthly|lifetime>/<code>        the paywall QR: redirects to the Shopify checkout
 //   POST /shopify/webhook                      orders/paid, refunds/create, orders/cancelled
 
 import {
   CLAIM_FAILS_PER_HOUR,
+  FREE_INSTALLS,
   HOUR,
   IP_WINDOW_MS,
   checkoutUrl,
@@ -45,6 +49,7 @@ async function route(request, env) {
     if (path === "/v1/status") return deviceCall(request, env, (device, now) => statusBody(env, device, ipOf(request), now));
     if (path === "/v1/trial") return deviceCall(request, env, (device, now) => startTrial(env, device, ipOf(request), now));
     if (path === "/v1/claim") return deviceCall(request, env, (device, now, body) => claim(env, device, body, ipOf(request), now));
+    if (path === "/v1/install") return deviceCall(request, env, (device, now, body) => installLink(env, device, body, now));
     if (path === "/shopify/webhook") return shopifyWebhook(request, env);
   }
   if (request.method === "GET") {
@@ -101,7 +106,9 @@ async function statusBody(env, device, ip, now) {
   const license = await licenseFor(env, device, now);
   if (license) {
     const token = await signLicense(env, { d: device.id, p: license.plan, e: license.expiresAt, i: now });
-    return { status: "unlocked", code: device.code, plan: license.plan, expiresAt: license.expiresAt, token, now };
+    const body = { status: "unlocked", code: device.code, plan: license.plan, expiresAt: license.expiresAt, token, now };
+    if (license.plan === "trial") body.freeInstalls = await freeInstalls(env, device.id);
+    return body;
   }
   const offer = trialOffer(device.trial_started_at, await recentTrialsOnIp(env, await ipHash(env, ip), now));
   return { status: "locked", code: device.code, trial: offer, now };
@@ -141,10 +148,52 @@ async function claim(env, device, body, ip, now) {
   return statusBody(env, device, ip, now);
 }
 
+// ---------- Installs ----------
+
+// The download link for one catalog app. Paid plans get every app. The trial gets FREE_INSTALLS
+// different apps; downloading one of those again (a retry, reinstall or update) costs nothing.
+async function installLink(env, device, body, now) {
+  const pkg = typeof body.package === "string" ? body.package : "";
+  const license = await licenseFor(env, device, now);
+  if (!license) return [{ error: "locked" }, 403];
+  const apkUrl = (await installLinks(env))[pkg];
+  if (!apkUrl) return [{ error: "unknown_app" }, 404];
+  if (license.plan !== "trial") return { apkUrl };
+  // One statement, so two downloads at once can't both take the last free install.
+  await env.DB.prepare(
+    `INSERT OR IGNORE INTO installs (device_id, package, at)
+     SELECT ?1, ?2, ?3 WHERE (SELECT COUNT(*) FROM installs WHERE device_id = ?1) < ?4`
+  ).bind(device.id, pkg, now, FREE_INSTALLS).run();
+  const free = await freeInstalls(env, device.id);
+  if (!free.used.includes(pkg)) return [{ error: "trial_limit", freeInstalls: free }, 402];
+  return { apkUrl, freeInstalls: free };
+}
+
+// {limit, used: [packages]} for a device in its trial.
+async function freeInstalls(env, deviceId) {
+  const rows = (await env.DB.prepare("SELECT package FROM installs WHERE device_id = ? ORDER BY at").bind(deviceId).all()).results;
+  return { limit: FREE_INSTALLS, used: rows.map((r) => r.package) };
+}
+
+let links;
+
+// {packageName: apkUrl}, written by scripts/publish_catalog.py. A deploy starts new isolates, so
+// keeping it per isolate never serves old links.
+async function installLinks(env) {
+  if (!links) {
+    const response = await env.ASSETS.fetch(new Request("https://assets.invalid/private/links.json"));
+    if (!response.ok) return {};
+    links = await response.json();
+  }
+  return links;
+}
+
 // ---------- Catalog ----------
 
+const TRIAL_CATALOG_FILES = new Set(["catalog.json", "catalog.json.sig", "catalog.json.debug.sig"]);
+
 async function catalogFile(request, env, file) {
-  if (!/^[A-Za-z0-9._-]+(\/[A-Za-z0-9._-]+)*$/.test(file) || file.split("/").some((p) => p === "." || p === "..")) {
+  if (!/^[A-Za-z0-9._-]+(\/[A-Za-z0-9._-]+)*$/.test(file) || file.split("/").some((p) => p === "." || p === "..") || file.startsWith("private/")) {
     return json({ error: "not_found" }, 404);
   }
   const auth = request.headers.get("Authorization") || "";
@@ -156,7 +205,9 @@ async function catalogFile(request, env, file) {
     const device = await env.DB.prepare("SELECT * FROM devices WHERE id = ?").bind(token.d).first();
     if (!device || !(await licenseFor(env, device, now))) return json({ error: "unauthorized" }, 403);
   }
-  const response = await env.ASSETS.fetch(new Request(new URL(`/${file}`, request.url)));
+  // Trial licenses get the catalog without download links (same file names, its own signatures).
+  const served = token.p === "trial" && TRIAL_CATALOG_FILES.has(file) ? `trial/${file}` : file;
+  const response = await env.ASSETS.fetch(new Request(new URL(`/${served}`, request.url)));
   if (!response.ok) return json({ error: "not_found" }, 404);
   const headers = new Headers(response.headers);
   headers.set("Cache-Control", "private, no-store");

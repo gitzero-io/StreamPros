@@ -41,7 +41,9 @@ fun AppRow(
     val context = LocalContext.current
     val installedVersion = remember(app, resumeTick, state) { AppLauncher.installedVersionCode(context, app.packageName) }
     val favorites by remember { UserPrefs.favorites(context) }.collectAsState(initial = emptySet())
-    val action = appAction(app, state, installedVersion, offerUpdates)
+    val license by License.state.collectAsState()
+    val freeInstalls = (license as? LicenseState.Unlocked)?.freeInstalls
+    val action = appAction(app, state, installedVersion, offerUpdates, freeInstalls)
     val actionFocus = remember { FocusRequester() }
     var uninstallFailed by remember { mutableStateOf(false) }
     val installed = installedVersion != null
@@ -59,7 +61,7 @@ fun AppRow(
             CategoryTags(app, Modifier.padding(vertical = 6.dp))
             if (uninstallFailed && installed) Text(stringResource(R.string.uninstall_failed), fontSize = 15.sp, color = HubColors.Warning)
             else Text(
-                statusText(app, state, installedVersion, offerUpdates).text(), fontSize = 15.sp,
+                statusText(app, state, installedVersion, offerUpdates, freeInstalls).text(), fontSize = 15.sp,
                 color = statusColor(app, state, installedVersion, offerUpdates)
             )
             InstallProgress(state, Modifier.padding(top = 8.dp).fillMaxWidth(0.6f))

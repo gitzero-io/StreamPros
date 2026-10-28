@@ -20,11 +20,19 @@ fun needsUpdate(installedVersionCode: Long?, catalogVersionCode: Long?): Boolean
 // installedVersion is null when the app isn't installed. An active download/install/failure wins
 // over "installed" so an update in progress shows its progress instead of OPEN. With
 // offerUpdates = false (the setup guide) an installed app always shows Installed / OPEN.
-// Installs and updates ask for the PIN first when one is set (PinLock).
-fun appAction(app: HubApp, state: InstallState?, installedVersion: Long?, offerUpdates: Boolean = true): AppAction {
+// Installs and updates ask for the PIN first when one is set (PinLock). During the trial, once its
+// free installs are used, other apps show GET A PLAN instead. Only apps without a link count: the
+// trial catalog has none, and the Hub's own update always has one.
+fun appAction(
+    app: HubApp, state: InstallState?, installedVersion: Long?, offerUpdates: Boolean = true,
+    freeInstalls: FreeInstalls? = License.freeInstalls()
+): AppAction {
+    val needsPlan = app.apkUrl == null && freeInstalls?.blocks(app.packageName) == true
     val installed = installedVersion != null
     val update = offerUpdates && needsUpdate(installedVersion, app.versionCode)
     return when {
+        state !is InstallState.Downloading && state !is InstallState.Installing && needsPlan && (!installed || update) ->
+            AppAction(R.string.action_get_plan, HubColors.GlowBlue, true) { License.requestPlans() }
         state is InstallState.Downloading ->
             AppAction(R.string.btn_cancel, HubColors.Muted, true) { InstallCoordinator.cancel(app.packageName) }
         state is InstallState.Installing -> AppAction(R.string.action_installing, HubColors.Muted, false) {}
@@ -36,10 +44,17 @@ fun appAction(app: HubApp, state: InstallState?, installedVersion: Long?, offerU
     }
 }
 
-fun statusText(app: HubApp, state: InstallState?, installedVersion: Long?, offerUpdates: Boolean = true): UiText {
+// During the trial, apps not yet installed say how many free installs are left.
+fun statusText(
+    app: HubApp, state: InstallState?, installedVersion: Long?, offerUpdates: Boolean = true,
+    freeInstalls: FreeInstalls? = License.freeInstalls()
+): UiText {
     val installed = installedVersion != null
     val update = offerUpdates && needsUpdate(installedVersion, app.versionCode)
+    val free = freeInstalls?.takeIf { app.apkUrl == null && app.packageName !in it.used && (!installed || update) }
     return when {
+        state == null && free != null && free.left == 0 -> uiText(R.string.status_needs_plan, free.limit)
+        state == null && free != null && !installed -> uiText(R.string.status_free_installs_left, free.left, free.limit)
         state is InstallState.Downloading ->
             if (state.percent >= 0) uiText(R.string.status_downloading_percent, state.percent) else uiText(R.string.status_downloading)
         state is InstallState.Installing -> uiText(R.string.status_confirm)

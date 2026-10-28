@@ -29,3 +29,12 @@ CREATE INDEX IF NOT EXISTS orders_device ON orders (device_id, plan);
 CREATE INDEX IF NOT EXISTS orders_name ON orders (name);
 CREATE INDEX IF NOT EXISTS orders_customer ON orders (customer_id, plan);
 CREATE INDEX IF NOT EXISTS orders_order ON orders (order_id);
+
+-- Apps a device downloaded during its trial: it gets FREE_INSTALLS different apps (src/lib.js).
+-- Installing or updating one of them again is free.
+CREATE TABLE IF NOT EXISTS installs (
+  device_id TEXT NOT NULL,
+  package TEXT NOT NULL,
+  at INTEGER NOT NULL,
+  PRIMARY KEY (device_id, package)
+);

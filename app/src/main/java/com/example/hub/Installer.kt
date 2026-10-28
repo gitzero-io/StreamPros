@@ -144,6 +144,8 @@ object InstallCoordinator {
             try {
                 apps.forEachIndexed { i, app ->
                     val pkg = app.packageName
+                    // Apps that need a plan are left for the viewer to unlock one by one.
+                    if (app.apkUrl == null && License.needsPlan(pkg)) return@forEachIndexed
                     _batch.value = BatchProgress(i, apps.size, pkg)
                     if (jobs[pkg]?.isActive != true) {
                         quiet += pkg
@@ -169,8 +171,9 @@ object InstallCoordinator {
     fun start(context: Context, app: HubApp): Boolean {
         val ctx = context.applicationContext
         val pkg = app.packageName
+        // No link: a trial catalog, so the license server gives it (License.installLink).
         val url = app.apkUrl
-        if (url.isNullOrBlank() || !url.startsWith("https://")) {
+        if (url != null && !url.startsWith("https://")) {
             set(pkg, InstallState.Failed(uiText(R.string.error_no_link))); return false
         }
         if (jobs[pkg]?.isActive == true) return true
@@ -187,11 +190,12 @@ object InstallCoordinator {
         set(pkg, InstallState.Downloading(0))
         jobs[pkg] = scope.launch {
             try {
-                val file = download(ctx, app) { set(pkg, InstallState.Downloading(it)) }
+                val target = if (url == null) app.copy(apkUrl = License.installLink(pkg)) else app
+                val file = download(ctx, target) { set(pkg, InstallState.Downloading(it)) }
                 set(pkg, InstallState.Installing)
                 withContext(Dispatchers.IO) {
-                    verifyDownloadedApk(ctx, app, file)
-                    commitInstall(ctx, app, file)
+                    verifyDownloadedApk(ctx, target, file)
+                    commitInstall(ctx, target, file)
                 }
             } catch (e: CancellationException) {
                 discard(ctx, pkg, keepPartial = false); clear(pkg); throw e

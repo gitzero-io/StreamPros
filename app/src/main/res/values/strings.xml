@@ -395,4 +395,12 @@
     <string name="membership_cancel_hint">To cancel, sign in at streampros.shop/account.</string>
     <string name="membership_trial">Free trial, ends %1$s</string>
     <string name="btn_see_plans">SEE PLANS</string>
+    <!-- Trial free installs (License.installLink) -->
+    <string name="action_get_plan">GET A PLAN</string>
+    <string name="status_needs_plan">Your %1$d free installs are used</string>
+    <string name="status_free_installs_left">Free trial: %1$d of %2$d free installs left</string>
+    <string name="error_trial_limit">Your free installs are used. Get a plan to install more apps.</string>
+    <string name="error_license_ended">Your plan or trial has ended</string>
+    <string name="membership_free_installs">%1$d of %2$d free installs left.</string>
+    <string name="plans_free_installs_used">You\'ve used your %1$d free installs. Get a plan to install every app.</string>
 </resources>

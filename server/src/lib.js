@@ -6,6 +6,8 @@ export const DAY = 24 * HOUR;
 export const TRIAL_MS = 12 * HOUR;
 export const IP_WINDOW_MS = 30 * DAY;
 export const TRIALS_PER_IP = 2;
+// Different apps a device may download during its trial. Paid plans have no limit.
+export const FREE_INSTALLS = 2;
 // A monthly payment unlocks for a month plus a day of grace for the renewal to arrive.
 export const MONTH_MS = 32 * DAY;
 // Lifetime licenses are re-issued on each check; this is how long one lasts without checking in.

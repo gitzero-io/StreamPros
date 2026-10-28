@@ -83,7 +83,9 @@ fun DetailScreen(app: HubApp, resumeTick: Int) {
     val installedVersion = remember(app, resumeTick, state) { AppLauncher.installedVersionCode(context, app.packageName) }
     val favorites by remember { UserPrefs.favorites(context) }.collectAsState(initial = emptySet())
     val favorite = app.packageName in favorites
-    val action = appAction(app, state, installedVersion)
+    val license by License.state.collectAsState()
+    val freeInstalls = (license as? LicenseState.Unlocked)?.freeInstalls
+    val action = appAction(app, state, installedVersion, freeInstalls = freeInstalls)
     val tint = app.categories.first().tint
     val focus = rememberInitialFocus()
     val installed = installedVersion != null
@@ -105,7 +107,7 @@ fun DetailScreen(app: HubApp, resumeTick: Int) {
             app.description?.let { Description(it, below = focus) }
             app.version?.let { Text(stringResource(R.string.detail_version, it), fontSize = 16.sp, color = HubColors.Muted) }
             if (uninstallFailed && installed) Text(stringResource(R.string.uninstall_failed), fontSize = 18.sp, color = HubColors.Warning)
-            else Text(statusText(app, state, installedVersion).text(), fontSize = 18.sp, color = statusColor(app, state, installedVersion))
+            else Text(statusText(app, state, installedVersion, freeInstalls = freeInstalls).text(), fontSize = 18.sp, color = statusColor(app, state, installedVersion))
             InstallProgress(state, Modifier.width(320.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.padding(top = 12.dp)) {
                 HubButton(

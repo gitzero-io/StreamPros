@@ -3,7 +3,9 @@
 A Cloudflare Worker with a D1 database. It runs on Cloudflare's free plan.
 
 - **Trials:** 12 hours, once per TV, and at most 2 per internet connection (IP address) every 30 days.
-  IPv6 connections count by their /64 range, which is what one home gets.
+  IPv6 connections count by their /64 range, which is what one home gets. A trial installs 2
+  different apps: trial devices get a catalog without download links and ask `/v1/install` for each
+  app, which counts them in the `installs` table. Reinstalling or updating one of the 2 is free.
 - **Purchases:** Shopify sends a webhook when an order is paid, refunded or cancelled. Monthly gives
   32 days per payment (a month plus a day of grace for the renewal). Lifetime never ends unless refunded.
 - **Licenses:** the app gets a license signed with `LICENSE_PRIVATE_KEY`. It checks the license

@@ -59,6 +59,19 @@ st, sg, _ = req("GET", "/v1/catalog/catalog.json.sig", headers=auth); check("sig
 art = json.loads(cat)["apps"][0]["artwork"]
 st, img, _ = req("GET", "/v1/catalog/" + art, headers=auth); check("artwork served", st == 200 and img[:4] == b"\x89PNG", art)
 st, _, _ = req("GET", "/v1/catalog/../wrangler.toml", headers=auth); check("traversal refused", st == 404)
+# Trial: no links in the catalog; /v1/install hands out 2 different apps
+check("trial catalog has no links", all("apkUrl" not in a for a in json.loads(cat)["apps"]))
+st, _, _ = req("GET", "/v1/catalog/private/links.json", headers=auth); check("links file never served", st == 404)
+LINKS = json.load(open(os.path.join(os.path.dirname(__file__), "..", "catalog", "private", "links.json")))
+P1, P2, P3 = list(LINKS)[:3]
+st, s = j("POST", "/v1/status", {"device": A}); check("trial status lists free installs", s.get("freeInstalls") == {"limit": 2, "used": []}, s)
+st, s = j("POST", "/v1/install", {"device": A, "package": "no.such.app"}); check("unknown app 404", st == 404 and s["error"] == "unknown_app", s)
+st, s = j("POST", "/v1/install", {"device": A, "package": P1}); check("1st free install", st == 200 and s["apkUrl"] == LINKS[P1] and s["freeInstalls"]["used"] == [P1], s)
+st, s = j("POST", "/v1/install", {"device": A, "package": P1}); check("same app again is free", st == 200 and s["freeInstalls"]["used"] == [P1], s)
+st, s = j("POST", "/v1/install", {"device": A, "package": P2}); check("2nd free install", st == 200 and s["freeInstalls"]["used"] == [P1, P2], s)
+st, s = j("POST", "/v1/install", {"device": A, "package": P3}); check("3rd app refused 402", st == 402 and s["error"] == "trial_limit" and "apkUrl" not in s, s)
+st, s = j("POST", "/v1/install", {"device": A, "package": P2}); check("used app still works after the limit", st == 200, s)
+st, s = j("POST", "/v1/status", {"device": A}); check("status shows both used", s["freeInstalls"]["used"] == [P1, P2], s)
 st, _, _ = req("GET", "/v1/catalog/catalog.json", headers={"Authorization": "Bearer " + p64 + "." + s64[:-4] + "AAAA"}); check("forged license -> 401", st == 401)
 st, s = j("POST", "/v1/trial", {"device": A}); check("second trial same device: still unlocked (in trial)", s["status"] == "unlocked")
 # IP limit: A used one trial on 1.1.1.1; B gets the second; C is refused
@@ -89,6 +102,9 @@ check("bad hmac refused", hook("orders/paid", order, b"wrong") == 401)
 check("orders/paid accepted", hook("orders/paid", order) == 200)
 check("duplicate webhook ok", hook("orders/paid", order) == 200)
 st, s = j("POST", "/v1/status", {"device": C}); check("C unlocked monthly", s["status"] == "unlocked" and s["plan"] == "monthly", s)
+check("paid status has no free install count", "freeInstalls" not in s)
+st, cat, _ = req("GET", "/v1/catalog/catalog.json", headers={"Authorization": "Bearer " + s["token"]}); check("paid catalog has links", any("apkUrl" in a for a in json.loads(cat)["apps"]))
+st, i = j("POST", "/v1/install", {"device": C, "package": P3}); check("paid install has no limit", st == 200 and i["apkUrl"] == LINKS[P3] and "freeInstalls" not in i, i)
 # renewal without code links by customer
 renew = {"id": 9002, "name": "#1002", "email": "buyer@example.com", "customer": {"id": 77}, "line_items": [{"id": 5003, "variant_id": 111, "properties": []}]}
 hook("orders/paid", renew)
@@ -97,6 +113,7 @@ st, s = j("POST", "/v1/status", {"device": C}); check("renewal extends", s["plan
 life = {"id": 9003, "name": "#1003", "email": "other@example.com", "line_items": [{"id": 5004, "variant_id": 222}]}
 hook("orders/paid", life)
 st, s = j("POST", "/v1/status", {"device": D}, ip="3.3.3.3"); check("D locked before claim", s["status"] == "locked")
+st, s = j("POST", "/v1/install", {"device": D, "package": P1}, ip="3.3.3.3"); check("locked device gets no link", st == 403 and s["error"] == "locked", s)
 st, s = j("POST", "/v1/claim", {"device": D, "order": "1003", "email": "nope@example.com"}, ip="3.3.3.3"); check("wrong email refused", st == 404 and s["error"] == "no_match", s)
 st, s = j("POST", "/v1/claim", {"device": D, "order": "#1003", "email": " Other@Example.com "}, ip="3.3.3.3"); check("claim unlocks lifetime", st == 200 and s["plan"] == "lifetime", s)
 tokD = s["token"]

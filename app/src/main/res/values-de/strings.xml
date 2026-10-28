@@ -376,4 +376,12 @@
     <string name="membership_cancel_hint">Zum Kündigen melde dich auf streampros.shop/account an.</string>
     <string name="membership_trial">Kostenloser Test, endet %1$s</string>
     <string name="btn_see_plans">ABOS ANSEHEN</string>
+    <!-- Trial free installs (License.installLink) -->
+    <string name="action_get_plan">TARIF WÄHLEN</string>
+    <string name="status_needs_plan">Deine %1$d kostenlosen Installationen sind verbraucht</string>
+    <string name="status_free_installs_left">Kostenloser Test: noch %1$d von %2$d kostenlosen Installationen</string>
+    <string name="error_trial_limit">Deine kostenlosen Installationen sind verbraucht. Wähle einen Tarif, um mehr Apps zu installieren.</string>
+    <string name="error_license_ended">Dein Tarif oder Test ist abgelaufen</string>
+    <string name="membership_free_installs">Noch %1$d von %2$d kostenlosen Installationen.</string>
+    <string name="plans_free_installs_used">Du hast deine %1$d kostenlosen Installationen genutzt. Wähle einen Tarif, um alle Apps zu installieren.</string>
 </resources>

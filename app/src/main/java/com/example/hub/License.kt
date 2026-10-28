@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -52,7 +53,23 @@ sealed interface LicenseState {
     // code: the short device code shown on the paywall and attached to the Shopify order.
     data class Locked(val code: String, val trial: TrialOffer) : LicenseState
     // expiresAt: null for lifetime. code: as in Locked, for buying a plan during the trial.
-    data class Unlocked(val plan: Plan, val expiresAt: Long?, val code: String?) : LicenseState
+    // freeInstalls: the trial's app downloads; null on paid plans.
+    data class Unlocked(val plan: Plan, val expiresAt: Long?, val code: String?, val freeInstalls: FreeInstalls? = null) : LicenseState
+}
+
+// The trial's downloads: `limit` different apps, `used` the ones already taken. Downloading a used
+// app again (retry, reinstall, update) is free. The server keeps count (/v1/install).
+data class FreeInstalls(val limit: Int, val used: List<String>) {
+    val left: Int get() = (limit - used.size).coerceAtLeast(0)
+
+    // True when downloading `pkg` would need a plan.
+    fun blocks(pkg: String): Boolean = pkg !in used && left == 0
+}
+
+fun parseFreeInstalls(o: JSONObject?): FreeInstalls? {
+    if (o == null || !o.has("limit")) return null
+    val used = o.optJSONArray("used")
+    return FreeInstalls(o.optInt("limit"), if (used == null) emptyList() else (0 until used.length()).map { used.getString(it) })
 }
 
 // A license as the server signed it: d = device id, p = plan, e = expiry, i = issued (Unix ms).
@@ -122,6 +139,18 @@ object License {
     private val _state = MutableStateFlow<LicenseState>(LicenseState.Checking)
     val state: StateFlow<LicenseState> = _state
 
+    // Set when an app needs a plan (the trial's free installs are used); HubRoot shows the plans.
+    private val _plansRequested = MutableStateFlow(false)
+    val plansRequested: StateFlow<Boolean> = _plansRequested
+    fun requestPlans() { _plansRequested.value = true }
+    fun plansShown() { _plansRequested.value = false }
+
+    // The trial's free installs, or null on a paid plan (or before the server answered).
+    fun freeInstalls(): FreeInstalls? = (_state.value as? LicenseState.Unlocked)?.freeInstalls
+
+    // True when downloading `pkg` needs a plan: the trial's free installs are all used on other apps.
+    fun needsPlan(pkg: String): Boolean = freeInstalls()?.blocks(pkg) == true
+
     // On launch: unlocks right away with a saved paid license (so the app opens offline), then
     // asks the server.
     fun start(context: Context) {
@@ -161,6 +190,26 @@ object License {
         return response?.optString("error").isNullOrEmpty() && _state.value is LicenseState.Unlocked
     }
 
+    // The download link for a catalog app without one: trial catalogs have no links, and the server
+    // hands them out for the trial's free installs (and for any app on a paid plan). Throws
+    // HubIOException with a message for the screen.
+    suspend fun installLink(pkg: String): String {
+        val response = mutex.withLock {
+            withContext(Dispatchers.IO) { post("/v1/install", JSONObject().put("device", deviceId(appContext)).put("package", pkg)) }
+        }
+        parseFreeInstalls(response.optJSONObject("freeInstalls"))?.let { free ->
+            _state.update { (it as? LicenseState.Unlocked)?.copy(freeInstalls = free) ?: it }
+        }
+        when (response.optString("error")) {
+            "" -> {}
+            "trial_limit" -> throw HubIOException(uiText(R.string.error_trial_limit))
+            "locked" -> { refreshSoon(force = true); throw HubIOException(uiText(R.string.error_license_ended)) }
+            else -> throw HubIOException(uiText(R.string.error_no_link))
+        }
+        return response.optString("apkUrl").takeIf { it.startsWith("https://") }
+            ?: throw HubIOException(uiText(R.string.error_no_link))
+    }
+
     // The checkout link for a plan, opened on a phone through the paywall's QR code. The server
     // turns it into the Shopify checkout with the device code attached.
     fun buyUrl(plan: Plan, code: String): String = "${BuildConfig.LICENSE_URL}/buy/${plan.wire}/$code"
@@ -188,7 +237,7 @@ object License {
         val serverNow = System.currentTimeMillis() + clockOffset
         if (token != null && tokenUnlocks(token, id, serverNow, serverNow, online = true)) {
             prefs(ctx).edit { putString(KEY_TOKEN, rawToken) }
-            _state.value = unlockedState(token)
+            _state.value = unlockedState(token, parseFreeInstalls(response.optJSONObject("freeInstalls")))
             CatalogUpdater.checkIfDue(ctx)
         } else if (response.has("code")) {
             lock(ctx, LicenseState.Locked(response.getString("code"), TrialOffer.from(response.optString("trial"))))
@@ -196,8 +245,9 @@ object License {
         response
     }
 
-    private fun unlockedState(token: LicenseToken) = LicenseState.Unlocked(
-        token.plan, if (token.plan == Plan.LIFETIME) null else token.expiresAt - clockOffset, prefs(appContext).getString(KEY_CODE, null)
+    private fun unlockedState(token: LicenseToken, freeInstalls: FreeInstalls? = null) = LicenseState.Unlocked(
+        token.plan, if (token.plan == Plan.LIFETIME) null else token.expiresAt - clockOffset, prefs(appContext).getString(KEY_CODE, null),
+        freeInstalls.takeIf { token.plan == Plan.TRIAL }
     )
 
     // Leaving the unlocked state wipes the license and the catalog.

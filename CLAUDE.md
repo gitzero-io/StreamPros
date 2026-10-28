@@ -18,7 +18,7 @@ paywall ($15/month or $60 lifetime through the Shopify store https://streampros.
 ## Project rules
 - App ID com.streampros.app (debug builds: com.streampros.app.debug; code package com.example.hub), minSdk 23, one generic Android TV APK. Same release key as the free Hub.
 - No app information before the paywall: the APK, the manifest and this repo hold no catalog, artwork or catalog package names. The catalog comes only from the license server (/v1/catalog/, license required) and is deleted from the device when the license ends. The manifest uses QUERY_ALL_PACKAGES instead of <queries> for catalog apps.
-- Licensing lives in License.kt (app) and server/src (server). The server decides; the app trusts a signed license only for paid plans and only for 7 days offline. The trial is one per device and 2 per IP (IPv6: /64) every 30 days.
+- Licensing lives in License.kt (app) and server/src (server). The server decides; the app trusts a signed license only for paid plans and only for 7 days offline. The trial is one per device and 2 per IP (IPv6: /64) every 30 days, lasts 12 hours and covers 2 different apps (FREE_INSTALLS in server/src/lib.js). Trial devices get catalog/trial/ (no download links) and ask /v1/install for each app's link; paid devices get the full catalog.
 - UI uses androidx.tv.material3; every screen must work with D-pad only
 - Every new screen sets initial focus explicitly and handles Back with BackHandler
 - The app only installs, launches and closes other apps. It never hosts or streams content.

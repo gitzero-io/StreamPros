@@ -376,4 +376,12 @@
     <string name="membership_cancel_hint">रद्द करने के लिए streampros.shop/account पर साइन इन करें।</string>
     <string name="membership_trial">मुफ़्त ट्रायल, %1$s को खत्म होगा</string>
     <string name="btn_see_plans">प्लान देखें</string>
+    <!-- Trial free installs (License.installLink) -->
+    <string name="action_get_plan">प्लान लें</string>
+    <string name="status_needs_plan">आपके %1$d मुफ़्त इंस्टॉल इस्तेमाल हो चुके हैं</string>
+    <string name="status_free_installs_left">मुफ़्त ट्रायल: %2$d में से %1$d मुफ़्त इंस्टॉल बाकी</string>
+    <string name="error_trial_limit">आपके मुफ़्त इंस्टॉल इस्तेमाल हो चुके हैं। और ऐप्स इंस्टॉल करने के लिए प्लान लें।</string>
+    <string name="error_license_ended">आपका प्लान या ट्रायल खत्म हो गया है</string>
+    <string name="membership_free_installs">%2$d में से %1$d मुफ़्त इंस्टॉल बाकी।</string>
+    <string name="plans_free_installs_used">आपने अपने %1$d मुफ़्त इंस्टॉल इस्तेमाल कर लिए हैं। सभी ऐप्स इंस्टॉल करने के लिए प्लान लें।</string>
 </resources>

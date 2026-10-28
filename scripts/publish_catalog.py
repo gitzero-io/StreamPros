@@ -12,6 +12,11 @@ takes a catalog newer than the one it has), and signs it twice:
   catalog.json.sig        release key (local.properties or env, see PUBLISHING.md)
   catalog.json.debug.sig  ~/.android/debug.keystore, so debug builds can test against the same server
 
+Trial devices get trial/catalog.json instead (signed the same way): the same catalog without
+download links (apkUrl, downloaderCode, etag). The links go to server/catalog/private/links.json,
+which the worker never serves; it hands them out one app at a time through /v1/install (2 apps
+during the trial).
+
 server/catalog/ is git-ignored and only ever reaches devices through the worker, which checks
 their license first. Nothing about the apps goes into this repo or the APK.
 Needs openssl (OpenSSL 3) and, for deploying, Node.js (npx wrangler).
@@ -108,6 +113,13 @@ def main():
     if previous.is_file():
         old_version = int(json.loads(previous.read_text(encoding="utf-8")).get("catalogVersion") or 0)
     catalog["catalogVersion"] = max(int(time.time()), int(catalog.get("catalogVersion") or 0) + 1, old_version + 1)
+    # The Hub's move switch is for free Hubs only.
+    catalog.pop("moveTo", None)
+    links = {a["packageName"]: a["apkUrl"] for a in catalog.get("apps", []) if a.get("apkUrl")}
+    trial = json.loads(json.dumps(catalog))
+    for app in trial.get("apps", []):
+        for field in ("apkUrl", "downloaderCode", "etag"):
+            app.pop(field, None)
 
     # Rebuilt from scratch so apps removed from the Hub catalog don't leave artwork behind.
     if OUT.exists():
@@ -119,14 +131,20 @@ def main():
         shutil.copy2(trending_src, OUT / "trending.json")
     if artwork_src.is_dir():
         shutil.copytree(artwork_src, OUT / "artwork")
+    (OUT / "private").mkdir()
+    (OUT / "private" / "links.json").write_text(json.dumps(links, indent=2) + "\n", encoding="utf-8")
+    (OUT / "trial").mkdir()
+    trial_signed = OUT / "trial" / "catalog.json"
+    trial_signed.write_text(json.dumps(trial, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
-    sign(signed, OUT / "catalog.json.sig", *release_keystore())
-    if DEBUG_KEYSTORE.is_file():
-        sign(signed, OUT / "catalog.json.debug.sig", DEBUG_KEYSTORE, "android")
-    else:
+    for data in (signed, trial_signed):
+        sign(data, data.with_name("catalog.json.sig"), *release_keystore())
+        if DEBUG_KEYSTORE.is_file():
+            sign(data, data.with_name("catalog.json.debug.sig"), DEBUG_KEYSTORE, "android")
+    if not DEBUG_KEYSTORE.is_file():
         print(f"{DEBUG_KEYSTORE} not found: debug builds won't accept this catalog")
 
-    print(f"catalogVersion {catalog['catalogVersion']}, {len(catalog.get('apps', []))} apps -> {OUT}")
+    print(f"catalogVersion {catalog['catalogVersion']}, {len(catalog.get('apps', []))} apps, {len(links)} links -> {OUT}")
     if args.no_deploy:
         print("Not deployed. Run `npx wrangler deploy` in server/ to publish it.")
         return

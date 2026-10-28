@@ -380,4 +380,12 @@
     <string name="membership_cancel_hint">Para cancelar, inicia sesión en streampros.shop/account.</string>
     <string name="membership_trial">Prueba gratis, termina el %1$s</string>
     <string name="btn_see_plans">VER PLANES</string>
+    <!-- Trial free installs (License.installLink) -->
+    <string name="action_get_plan">OBTENER UN PLAN</string>
+    <string name="status_needs_plan">Ya usaste tus %1$d instalaciones gratis</string>
+    <string name="status_free_installs_left">Prueba gratis: te quedan %1$d de %2$d instalaciones gratis</string>
+    <string name="error_trial_limit">Ya usaste tus instalaciones gratis. Obtén un plan para instalar más apps.</string>
+    <string name="error_license_ended">Tu plan o prueba ha terminado</string>
+    <string name="membership_free_installs">Te quedan %1$d de %2$d instalaciones gratis.</string>
+    <string name="plans_free_installs_used">Ya usaste tus %1$d instalaciones gratis. Obtén un plan para instalar todas las apps.</string>
 </resources>

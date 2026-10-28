@@ -212,7 +212,8 @@ private fun MembershipRow(onPlans: () -> Unit) {
     val description = when (unlocked.plan) {
         Plan.LIFETIME -> stringResource(R.string.membership_lifetime)
         Plan.MONTHLY -> stringResource(R.string.membership_monthly, until.orEmpty()) + " " + stringResource(R.string.membership_cancel_hint)
-        Plan.TRIAL -> stringResource(R.string.membership_trial, until.orEmpty())
+        Plan.TRIAL -> stringResource(R.string.membership_trial, until.orEmpty()) +
+            unlocked.freeInstalls?.let { " " + stringResource(R.string.membership_free_installs, it.left, it.limit) }.orEmpty()
     }
     SettingRow(stringResource(R.string.settings_membership), description) {
         if (unlocked.plan == Plan.TRIAL && unlocked.code != null) HubButton(stringResource(R.string.btn_see_plans), onPlans)

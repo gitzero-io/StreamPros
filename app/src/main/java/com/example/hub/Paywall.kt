@@ -91,10 +91,16 @@ private fun OfflineScreen() {
 }
 
 // The two plans with a checkout QR code for the focused one, the free trial and "I already paid".
-// trial: null hides the trial (opened from Settings during the trial). onBack: null on the paywall
-// itself, where Back leaves the app.
+// trial: null hides the trial (opened during the trial). onBack: null on the paywall itself, where
+// Back leaves the app; backLabel names its button. note: why the plans are showing, if anything.
 @Composable
-fun PlansScreen(code: String, trial: TrialOffer?, onBack: (() -> Unit)?) {
+fun PlansScreen(
+    code: String,
+    trial: TrialOffer?,
+    onBack: (() -> Unit)?,
+    backLabel: Int = R.string.btn_back_to_settings,
+    note: String? = null
+) {
     if (onBack != null) BackHandler(onBack = onBack)
     // Picks up the purchase once Shopify tells the server about the order.
     LaunchedEffect(Unit) {
@@ -113,6 +119,7 @@ fun PlansScreen(code: String, trial: TrialOffer?, onBack: (() -> Unit)?) {
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(14.dp)) {
             Text(stringResource(R.string.app_name), fontSize = 13.sp, color = HubColors.GlowPurple)
             Text(stringResource(R.string.paywall_title), fontSize = 38.sp, lineHeight = 44.sp, color = HubColors.Text)
+            if (note != null) Text(note, fontSize = 18.sp, lineHeight = 25.sp, color = HubColors.GlowBlue)
             Text(stringResource(R.string.paywall_body), fontSize = 18.sp, lineHeight = 25.sp, color = HubColors.Muted)
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp), modifier = Modifier.padding(top = 6.dp)) {
                 // The trial button takes first focus when it's offered, otherwise Monthly.
@@ -139,7 +146,7 @@ fun PlansScreen(code: String, trial: TrialOffer?, onBack: (() -> Unit)?) {
             }
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 HubButton(stringResource(R.string.btn_already_paid), { claiming = true }, color = HubColors.GlowPurple)
-                if (onBack != null) HubButton(stringResource(R.string.btn_back_to_settings), onBack, color = HubColors.Muted)
+                if (onBack != null) HubButton(stringResource(backLabel), onBack, color = HubColors.Muted)
             }
         }
         CheckoutPanel(plan, code, Modifier.width(300.dp))

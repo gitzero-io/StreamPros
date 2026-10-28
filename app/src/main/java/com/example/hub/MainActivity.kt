@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.*
 
@@ -211,6 +212,21 @@ fun HubRoot(
 
     val pinRequest by PinLock.request.collectAsState()
     if (pinRequest != null) PinEntryDialog()
+
+    // GET A PLAN on an app once the trial's free installs are used: the plans over whatever is
+    // showing (the setup guide included). Closes itself once a plan replaces the trial.
+    val plansRequested by License.plansRequested.collectAsState()
+    val trial = (license as? LicenseState.Unlocked)?.takeIf { it.plan == Plan.TRIAL }
+    if (plansRequested && trial?.code != null) {
+        Dialog(onDismissRequest = License::plansShown, properties = DialogProperties(usePlatformDefaultWidth = false)) {
+            Box(Modifier.fillMaxSize().background(HubColors.Black).padding(horizontal = 28.dp + ShelfInset, vertical = 28.dp)) {
+                PlansScreen(
+                    trial.code, trial = null, onBack = License::plansShown, backLabel = R.string.btn_not_now,
+                    note = trial.freeInstalls?.let { stringResource(R.string.plans_free_installs_used, it.limit) }
+                )
+            }
+        }
+    } else if (plansRequested) LaunchedEffect(Unit) { License.plansShown() }
 }
 
 @Composable

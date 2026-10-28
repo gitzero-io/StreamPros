@@ -380,4 +380,12 @@
     <string name="membership_cancel_hint">Pour résilier, connectez-vous sur streampros.shop/account.</string>
     <string name="membership_trial">Essai gratuit, se termine le %1$s</string>
     <string name="btn_see_plans">VOIR LES OFFRES</string>
+    <!-- Trial free installs (License.installLink) -->
+    <string name="action_get_plan">CHOISIR UNE OFFRE</string>
+    <string name="status_needs_plan">Vos %1$d installations gratuites sont utilisées</string>
+    <string name="status_free_installs_left">Essai gratuit : %1$d sur %2$d installations gratuites restantes</string>
+    <string name="error_trial_limit">Vos installations gratuites sont utilisées. Choisissez une offre pour installer d\'autres applis.</string>
+    <string name="error_license_ended">Votre offre ou votre essai est terminé</string>
+    <string name="membership_free_installs">%1$d sur %2$d installations gratuites restantes.</string>
+    <string name="plans_free_installs_used">Vous avez utilisé vos %1$d installations gratuites. Choisissez une offre pour installer toutes les applis.</string>
 </resources>
