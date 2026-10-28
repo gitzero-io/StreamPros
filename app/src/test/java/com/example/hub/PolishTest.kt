@@ -55,9 +55,9 @@ class PolishTest {
 
     @Test
     fun downloadFilesMapToTheirPackage() {
-        assertEquals("flix.com.vision", downloadFilePackage("flix.com.vision.apk"))
-        assertEquals("flix.com.vision", downloadFilePackage("flix.com.vision.part"))
-        assertEquals("flix.com.vision", downloadFilePackage("flix.com.vision.part.info"))
+        assertEquals("com.example.player", downloadFilePackage("com.example.player.apk"))
+        assertEquals("com.example.player", downloadFilePackage("com.example.player.part"))
+        assertEquals("com.example.player", downloadFilePackage("com.example.player.part.info"))
         assertNull(downloadFilePackage("notes.txt"))
         assertNull(downloadFilePackage(".apk"))
     }

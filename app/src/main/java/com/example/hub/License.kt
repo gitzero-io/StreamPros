@@ -115,6 +115,9 @@ object License {
     private val mutex = Mutex()
     private lateinit var appContext: Context
     @Volatile private var lastRefresh = 0L
+    // Server clock minus this TV's clock, from the last answer. TV clocks are often off by hours,
+    // so expiry times are shown and timed on the TV's own clock.
+    @Volatile private var clockOffset = 0L
 
     private val _state = MutableStateFlow<LicenseState>(LicenseState.Checking)
     val state: StateFlow<LicenseState> = _state
@@ -141,7 +144,8 @@ object License {
     fun token(context: Context): String? {
         val raw = prefs(context).getString(KEY_TOKEN, null) ?: return null
         val token = verifyLicenseToken(raw, publicKey()) ?: return null
-        return raw.takeIf { tokenUnlocks(token, deviceId(context), System.currentTimeMillis(), lastContact(context), online = true) }
+        val serverNow = System.currentTimeMillis() + clockOffset
+        return raw.takeIf { tokenUnlocks(token, deviceId(context), serverNow, serverNow, online = true) }
     }
 
     // Asks the server for this device's status.
@@ -176,11 +180,13 @@ object License {
             return@withLock null
         }
         lastRefresh = System.currentTimeMillis()
+        if (response.has("now")) clockOffset = response.getLong("now") - System.currentTimeMillis()
         prefs(ctx).edit { putLong(KEY_LAST_CONTACT, System.currentTimeMillis()) }
         response.optString("code").takeIf { it.isNotEmpty() }?.let { prefs(ctx).edit { putString(KEY_CODE, it) } }
         val rawToken = response.optString("token").takeIf { it.isNotEmpty() }
         val token = rawToken?.let { verifyLicenseToken(it, publicKey()) }
-        if (token != null && tokenUnlocks(token, id, System.currentTimeMillis(), System.currentTimeMillis(), online = true)) {
+        val serverNow = System.currentTimeMillis() + clockOffset
+        if (token != null && tokenUnlocks(token, id, serverNow, serverNow, online = true)) {
             prefs(ctx).edit { putString(KEY_TOKEN, rawToken) }
             _state.value = unlockedState(token)
             CatalogUpdater.checkIfDue(ctx)
@@ -191,7 +197,7 @@ object License {
     }
 
     private fun unlockedState(token: LicenseToken) = LicenseState.Unlocked(
-        token.plan, if (token.plan == Plan.LIFETIME) null else token.expiresAt, prefs(appContext).getString(KEY_CODE, null)
+        token.plan, if (token.plan == Plan.LIFETIME) null else token.expiresAt - clockOffset, prefs(appContext).getString(KEY_CODE, null)
     )
 
     // Leaving the unlocked state wipes the license and the catalog.

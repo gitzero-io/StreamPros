@@ -9,6 +9,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
@@ -16,7 +17,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.SolidColor
@@ -28,6 +38,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -51,16 +62,7 @@ fun LicenseGate(state: LicenseState) {
     when (state) {
         LicenseState.Checking -> CheckingScreen()
         LicenseState.Offline -> OfflineScreen()
-        is LicenseState.Locked -> {
-            // Unlocks on its own once Shopify tells the server about the order.
-            LaunchedEffect(Unit) {
-                while (true) {
-                    delay(PAYWALL_POLL_MS)
-                    License.refresh()
-                }
-            }
-            PlansScreen(state.code, state.trial, onBack = null)
-        }
+        is LicenseState.Locked -> PlansScreen(state.code, state.trial, onBack = null)
         is LicenseState.Unlocked -> Unit
     }
 }
@@ -94,6 +96,13 @@ private fun OfflineScreen() {
 @Composable
 fun PlansScreen(code: String, trial: TrialOffer?, onBack: (() -> Unit)?) {
     if (onBack != null) BackHandler(onBack = onBack)
+    // Picks up the purchase once Shopify tells the server about the order.
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(PAYWALL_POLL_MS)
+            License.refresh()
+        }
+    }
     val scope = rememberCoroutineScope()
     var plan by remember { mutableStateOf(Plan.MONTHLY) }
     var startingTrial by remember { mutableStateOf(false) }
@@ -165,7 +174,7 @@ private fun CheckoutPanel(plan: Plan, code: String, modifier: Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Text(stringResource(R.string.paywall_scan, price), fontSize = 16.sp, color = HubColors.Text)
+        Text(stringResource(R.string.paywall_scan, price), fontSize = 16.sp, color = HubColors.Text, textAlign = TextAlign.Center)
         QrCode(url, Modifier.size(200.dp))
         Text(stringResource(R.string.paywall_device_code, formatDeviceCode(code)), fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = HubColors.GlowPurple)
         Text(stringResource(R.string.paywall_auto), fontSize = 13.sp, lineHeight = 18.sp, color = HubColors.Muted)
@@ -209,6 +218,7 @@ private fun ClaimDialog(onDismiss: () -> Unit) {
     }
     Dialog(onDismissRequest = onDismiss) {
         val focus = rememberInitialFocus()
+        val unlockFocus = remember { FocusRequester() }
         Column(
             Modifier.width(560.dp).background(HubColors.SurfaceRaised, RoundedCornerShape(20.dp)).padding(32.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
@@ -216,10 +226,13 @@ private fun ClaimDialog(onDismiss: () -> Unit) {
             Text(stringResource(R.string.claim_title), fontSize = 28.sp, lineHeight = 34.sp, color = HubColors.Text)
             Text(stringResource(R.string.claim_body), fontSize = 16.sp, lineHeight = 22.sp, color = HubColors.Muted)
             ClaimField(order, { order = it.filter(Char::isDigit).take(12) }, stringResource(R.string.claim_order_hint), KeyboardType.Number, Modifier.focusRequester(focus))
-            ClaimField(email, { email = it.trim().take(200) }, stringResource(R.string.claim_email_hint), KeyboardType.Email, Modifier)
+            ClaimField(
+                email, { email = it.trim().take(200) }, stringResource(R.string.claim_email_hint), KeyboardType.Email,
+                Modifier.focusProperties { down = unlockFocus }, onDone = { submit() }
+            )
             if (failed) Text(stringResource(R.string.claim_failed), fontSize = 16.sp, color = HubColors.Text)
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp), modifier = Modifier.padding(top = 4.dp)) {
-                HubButton(stringResource(if (busy) R.string.btn_checking else R.string.btn_unlock), { submit() })
+                HubButton(stringResource(if (busy) R.string.btn_checking else R.string.btn_unlock), { submit() }, Modifier.focusRequester(unlockFocus))
                 HubButton(stringResource(R.string.btn_cancel), onDismiss, color = HubColors.Muted)
             }
         }
@@ -227,14 +240,32 @@ private fun ClaimDialog(onDismiss: () -> Unit) {
 }
 
 @Composable
-private fun ClaimField(value: String, onValueChange: (String) -> Unit, hint: String, type: KeyboardType, modifier: Modifier) {
+private fun ClaimField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    hint: String,
+    type: KeyboardType,
+    modifier: Modifier,
+    onDone: (() -> Unit)? = null
+) {
     val shape = RoundedCornerShape(12.dp)
+    val focusManager = LocalFocusManager.current
     val interaction = remember { MutableInteractionSource() }
     val focused by interaction.collectIsFocusedAsState()
     BasicTextField(
         value = value,
         onValueChange = onValueChange,
         modifier = modifier.fillMaxWidth()
+            // Up and down leave the field, so the remote can reach the buttons (the text field
+            // would otherwise keep them for moving the cursor).
+            .onPreviewKeyEvent { event ->
+                if (event.type != KeyEventType.KeyDown) return@onPreviewKeyEvent false
+                when (event.key) {
+                    Key.DirectionDown -> focusManager.moveFocus(FocusDirection.Down)
+                    Key.DirectionUp -> focusManager.moveFocus(FocusDirection.Up)
+                    else -> false
+                }
+            }
             .glow(HubColors.GlowRed, cornerRadius = 12.dp, spread = 12.dp)
             .background(if (focused) HubColors.Black else HubColors.Surface, shape)
             .border(if (focused) 2.dp else 1.dp, if (focused) HubColors.GlowRed else HubColors.Line, shape)
@@ -243,7 +274,8 @@ private fun ClaimField(value: String, onValueChange: (String) -> Unit, hint: Str
         interactionSource = interaction,
         textStyle = TextStyle(fontSize = 20.sp, color = HubColors.Text),
         cursorBrush = SolidColor(HubColors.GlowBlue),
-        keyboardOptions = KeyboardOptions(keyboardType = type, imeAction = ImeAction.Next),
+        keyboardOptions = KeyboardOptions(keyboardType = type, imeAction = if (onDone != null) ImeAction.Done else ImeAction.Next),
+        keyboardActions = KeyboardActions(onDone = { onDone?.invoke() }),
         decorationBox = { inner ->
             Box(Modifier.padding(horizontal = 18.dp, vertical = 12.dp)) {
                 if (value.isEmpty()) Text(hint, fontSize = 20.sp, color = HubColors.Muted)

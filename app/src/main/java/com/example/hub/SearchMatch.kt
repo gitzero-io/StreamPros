@@ -8,7 +8,7 @@ internal fun normalizeForSearch(text: String): String =
 
 // Catalog apps matching the query, best first: name matches, then category matches, then
 // notes matches, each group in catalog order. Case and punctuation are ignored, and spaces are
-// optional ("hdstreamz" finds "HD Streamz"). A blank query matches nothing. categoryNames gives
+// optional ("hdstreamio" finds "HD Streamio"). A blank query matches nothing. categoryNames gives
 // every name a category answers to; the screen adds the translated one ("Deportes").
 // Runs on the device only; the query never leaves it.
 fun searchApps(

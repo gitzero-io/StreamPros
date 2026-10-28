@@ -1,0 +1,32 @@
+# StreamPros license server. Setup: README.md in this folder.
+name = "streampros-license"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+
+# The members-only catalog (catalog.json + signatures, trending.json, artwork), written by
+# scripts/publish_catalog.py. The worker runs first for every request, so these files are only
+# served to devices with a valid license, never directly.
+[assets]
+directory = "./catalog"
+binding = "ASSETS"
+run_worker_first = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "streampros"
+database_id = "PASTE-THE-ID-FROM-wrangler-d1-create"
+
+[vars]
+SHOP_URL = "https://streampros.shop"
+# From Shopify admin (README.md step 4): the two variants of the StreamPros product, and the
+# monthly subscription plan.
+MONTHLY_VARIANT_ID = ""
+LIFETIME_VARIANT_ID = ""
+MONTHLY_SELLING_PLAN_ID = ""
+# Public half of LICENSE_PRIVATE_KEY; the same value as streampros.licenseKey in gradle.properties.
+LICENSE_PUBLIC_KEY = "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEbMm7loJq3nDGpM7+89Vev6GP4Ru7FgT2TOVIvoXp2hk++5O7LLwKuUa0fTcLhf9o9BVOWOb5yQdUGe2NbAWBLA=="
+
+# Secrets (npx wrangler secret put <NAME>), never in this file:
+#   LICENSE_PRIVATE_KEY     the PEM in ~/streampros-license-private.pem
+#   HASH_KEY                any long random string; keys the IP and email hashes
+#   SHOPIFY_WEBHOOK_SECRET  from Shopify admin > Settings > Notifications > Webhooks

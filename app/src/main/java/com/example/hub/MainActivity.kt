@@ -240,8 +240,10 @@ private fun ScreenContent(
         }
         Screen.Plans -> Box(Modifier.padding(horizontal = ShelfInset)) {
             val license by License.state.collectAsState()
-            val code = (license as? LicenseState.Unlocked)?.code
-            if (code != null) PlansScreen(code, trial = null, onBack = pop) else LaunchedEffect(Unit) { pop() }
+            // Back to Settings once a plan replaces the trial.
+            val trial = license as? LicenseState.Unlocked
+            if (trial?.plan == Plan.TRIAL && trial.code != null) PlansScreen(trial.code, trial = null, onBack = pop)
+            else LaunchedEffect(Unit) { pop() }
         }
         Screen.CloseApps -> Box(Modifier.padding(horizontal = ShelfInset)) { CloseAppsScreen(resumeTick, onDone = pop) }
         Screen.Storage -> Box(Modifier.padding(horizontal = ShelfInset)) { StorageScreen(resumeTick, onDone = pop) }

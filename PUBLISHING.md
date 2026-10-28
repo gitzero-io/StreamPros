@@ -1,13 +1,20 @@
-# Publishing StreamPros Hub
+# Publishing StreamPros
 
-A new Hub release needs no code changes. Bump the version, build, write `hub-version.json`, and
-upload two files to a new GitHub release. Installed Hubs find it on their own.
+StreamPros is the paid version of StreamPros Hub (`com.streampros.app`, separate from the free
+`com.streampros.hub`). It uses the same release key. A new release needs no code changes: bump the
+version, build, write `hub-version.json`, and upload two files to a new GitHub release. Installed
+copies find it on their own.
 
-- Repo: https://github.com/gitzero-io/Streampros-Hub
-- Hubs read: `https://github.com/gitzero-io/Streampros-Hub/releases/latest/download/hub-version.json`
+The APK holds no app list. The catalog is published to the license server instead
+(`server/README.md`, "Updating the catalog"), so no catalog files go on GitHub.
+
+- Repo: https://github.com/gitzero-io/StreamPros
+- The app reads: `https://github.com/gitzero-io/StreamPros/releases/latest/download/hub-version.json`
   (`streampros.updateUrl` in `gradle.properties`)
 - Download link for users and Downloader codes:
-  `https://github.com/gitzero-io/Streampros-Hub/releases/latest/download/StreamProsHub.apk`
+  `https://github.com/gitzero-io/StreamPros/releases/latest/download/StreamPros.apk`
+- Before the first release: set `streampros.licenseUrl` in `gradle.properties` to the deployed
+  license server (`server/README.md`). The build refuses to run without it.
 
 ## 1. Release key (once)
 
@@ -80,16 +87,7 @@ You want:
 - `Signer #1 certificate SHA-256 digest:` the same fingerprint you recorded in step 1.
 - No `DOES NOT VERIFY`. The `WARNING: META-INF/... not protected by signature` lines are normal.
 
-## 4. Sign the catalog and write hub-version.json
-
-Sign the catalog before building (step 2), so the APK ships the same catalogVersion:
-
-```sh
-python3 scripts/sign_catalog.py
-```
-
-It stamps a new `catalogVersion` into `app/src/main/assets/catalog.json` and writes
-`dist/catalog.json` and `dist/catalog.json.sig`. Then:
+## 4. Write hub-version.json
 
 ```sh
 python3 scripts/make_hub_version.py --notes "What's new in this version"
@@ -98,7 +96,7 @@ python3 scripts/make_hub_version.py --notes "What's new in this version"
 This reads versionCode, versionName and minSdk (aapt2), the APK's SHA-256 and its signer SHA-256
 (apksigner). It refuses debug-signed or wrongly packaged APKs, and writes:
 
-- `dist/StreamProsHub.apk`
+- `dist/StreamPros.apk`
 - `dist/hub-version.json`, containing versionCode, versionName, apkUrl (the `latest/download`
   link), sha256, signerSha256, minSdk and notes
 
@@ -107,40 +105,18 @@ This reads versionCode, versionName and minSdk (aapt2), the APK's SHA-256 and it
 On GitHub: Releases, then Draft a new release. Use a new tag (for example `v1.1`), attach both files
 from `dist/` with exactly those names, and publish. Make sure it is marked as the latest release.
 
-Also attach `dist/catalog.json` and `dist/catalog.json.sig`.
+Don't attach any catalog files: the catalog only lives on the license server.
 
-Within 12 hours, or right away from Settings, Hub update, CHECK, installed Hubs see the new
+Within 12 hours, or right away from Settings, Hub update, CHECK, installed copies see the new
 version.
 
-## Updating apps without a Hub release
-
-When `catalog_tool.py` has new app versions, links or descriptions, there's no need for a new
-Hub release:
-
-1. `python3 scripts/sign_catalog.py`. This signs with the release key from `local.properties`.
-2. On GitHub, edit the latest release. Delete its `catalog.json` and `catalog.json.sig` and upload the
-   new pair from `dist/`. Keep both names exactly.
-3. Commit `assets/catalog.json` so the next Hub release ships the same catalog.
-
-Hubs check `streampros.catalogUrl` (the latest release's `catalog.json`) at most every 3 hours
-when they open. They use the file only if:
-
-- `catalog.json.sig` is a valid SHA-256 signature by the same key that signed the installed Hub.
-  Debug builds only accept files signed with `--debug-key`, which must never be uploaded.
-- Its `schemaVersion` matches, and its `catalogVersion` is higher than the catalog they have, so an
-  old file can't roll apps back.
-
-A downloaded catalog can change versions, links, hashes, signers and text for apps the Hub already
-ships. It can't add apps: they need their package in the manifest's `<queries>` and their
-artwork in the APK, so new apps still need a Hub release. Artwork always comes from the APK.
-
-## What a Hub checks before installing an update
+## What the app checks before installing an update
 
 1. `hub-version.json` must have an https apkUrl and valid 64-hex `sha256` and `signerSha256`.
 2. Its versionCode must be higher than the installed one, and its `minSdk` must be supported by the
    TV.
 3. Its `signerSha256` must equal the installed Hub's own signing certificate.
-4. After download, the APK must have package `com.streampros.hub`, the exact `sha256`, and a signer
+4. After download, the APK must have package `com.streampros.app`, the exact `sha256`, and a signer
    matching `signerSha256`.
 
 If any check fails, the Hub shows a message and installs nothing. Android also refuses an update

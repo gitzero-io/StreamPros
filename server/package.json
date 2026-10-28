@@ -1,0 +1,13 @@
+{
+  "name": "streampros-license",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "test": "python3 test/e2e.py"
+  },
+  "devDependencies": {
+    "wrangler": "4.151.0"
+  }
+}

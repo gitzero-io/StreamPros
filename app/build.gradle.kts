@@ -77,6 +77,12 @@ android {
         debug {
             // Lets a test build sit next to the released app on the same TV.
             applicationIdSuffix = ".debug"
+            // Testing against `npx wrangler dev` (server/README.md): pass
+            // -Pstreampros.debugLicenseUrl=http://localhost:8787 and run `adb reverse tcp:8787 tcp:8787`.
+            // Debug builds only; cleartext is allowed for localhost by src/debug's network config.
+            (findProperty("streampros.debugLicenseUrl") as String?)?.takeIf { it.isNotBlank() }?.let {
+                buildConfigField("String", "LICENSE_URL", "\"${it.trimEnd('/')}\"")
+            }
         }
     }
     compileOptions {

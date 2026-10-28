@@ -4,43 +4,43 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class SearchTest {
-    private val clipbox = HubApp("Clipbox", "a", listOf(Category.MOVIES, Category.SHOWS))
-    private val hd = HubApp("HD Streamz", "b", listOf(Category.LIVE_TV), notes = "confirm host is official")
-    private val sportsBox = HubApp("AK47 Sports", "c", listOf(Category.SPORTS))
+    private val clipdeck = HubApp("Clipdeck", "a", listOf(Category.MOVIES, Category.SHOWS))
+    private val hd = HubApp("HD Streamio", "b", listOf(Category.LIVE_TV), notes = "confirm host is official")
+    private val sportsBox = HubApp("Box47 Sports", "c", listOf(Category.SPORTS))
     private val liveSports = HubApp("Arena", "d", listOf(Category.SPORTS, Category.LIVE_TV), notes = "Movies too")
-    private val apps = listOf(clipbox, hd, sportsBox, liveSports)
+    private val apps = listOf(clipdeck, hd, sportsBox, liveSports)
 
     private fun names(query: String) = searchApps(query, apps).map { it.name }
 
     @Test
     fun matchesNameIgnoringCase() {
-        assertEquals(listOf("Clipbox"), names("CLIP"))
+        assertEquals(listOf("Clipdeck"), names("CLIP"))
     }
 
     @Test
     fun nameMatchesComeBeforeCategoryMatches() {
-        // "AK47 Sports" matches by name; "Arena" only by its Sports category.
-        assertEquals(listOf("AK47 Sports", "Arena"), names("sports"))
+        // "Box47 Sports" matches by name; "Arena" only by its Sports category.
+        assertEquals(listOf("Box47 Sports", "Arena"), names("sports"))
     }
 
     @Test
     fun matchesCategoryLabel() {
-        assertEquals(listOf("HD Streamz", "Arena"), names("live tv"))
+        assertEquals(listOf("HD Streamio", "Arena"), names("live tv"))
     }
 
     @Test
     fun notesMatchComesLast() {
-        // Clipbox is a Movies app (category); Arena only mentions movies in its notes.
-        assertEquals(listOf("Clipbox", "Arena"), names("movies"))
-        assertEquals(listOf("HD Streamz"), names("official"))
+        // Clipdeck is a Movies app (category); Arena only mentions movies in its notes.
+        assertEquals(listOf("Clipdeck", "Arena"), names("movies"))
+        assertEquals(listOf("HD Streamio"), names("official"))
     }
 
     @Test
     fun ignoresPunctuationAndSpacing() {
-        assertEquals(listOf("HD Streamz"), names("hd-streamz!"))
-        assertEquals(listOf("HD Streamz"), names("HDStreamz"))
-        assertEquals(listOf("AK47 Sports"), names("ak-47"))
-        assertEquals(listOf("HD Streamz", "Arena"), names("Live-TV"))
+        assertEquals(listOf("HD Streamio"), names("hd-streamio!"))
+        assertEquals(listOf("HD Streamio"), names("HDStreamio"))
+        assertEquals(listOf("Box47 Sports"), names("box-47"))
+        assertEquals(listOf("HD Streamio", "Arena"), names("Live-TV"))
     }
 
     @Test
@@ -59,8 +59,8 @@ class SearchTest {
     fun matchesTranslatedCategoryNames() {
         val spanish = mapOf(Category.SPORTS to "Deportes", Category.MOVIES to "Películas")
         val found = searchApps("deportes", apps) { listOfNotNull(it.label, spanish[it]) }.map { it.name }
-        assertEquals(listOf("AK47 Sports", "Arena"), found)
+        assertEquals(listOf("Box47 Sports", "Arena"), found)
         // The English name still works with the Hub in another language.
-        assertEquals(listOf("AK47 Sports", "Arena"), searchApps("sports", apps) { listOfNotNull(it.label, spanish[it]) }.map { it.name })
+        assertEquals(listOf("Box47 Sports", "Arena"), searchApps("sports", apps) { listOfNotNull(it.label, spanish[it]) }.map { it.name })
     }
 }

@@ -1,0 +1,9 @@
+# Copy to .dev.vars (git-ignored) for `npx wrangler dev`. Test values only; production secrets are
+# set with `npx wrangler secret put`. LICENSE_PRIVATE_KEY: the base64 body of
+# ~/streampros-license-private.pem on one line (grep -v -- ----- ~/streampros-license-private.pem | tr -d '\n').
+LICENSE_PRIVATE_KEY=
+HASH_KEY=local-test-hash-key
+SHOPIFY_WEBHOOK_SECRET=local-test-webhook
+MONTHLY_VARIANT_ID=111
+LIFETIME_VARIANT_ID=222
+MONTHLY_SELLING_PLAN_ID=333

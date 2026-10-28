@@ -92,7 +92,7 @@ fun AppRow(
     }
 }
 
-// App name with its catalog version after it, e.g. "Clipbox  v1.6.2". A long name is cut short
+// App name with its catalog version after it, e.g. "Clipdeck  v1.6.2". A long name is cut short
 // (ellipsis) so the version always shows.
 @Composable
 internal fun AppNameWithVersion(
