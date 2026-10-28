@@ -392,7 +392,7 @@
     <string name="settings_membership">Membership</string>
     <string name="membership_lifetime">Lifetime. Thanks for your support!</string>
     <string name="membership_monthly">Monthly, paid through %1$s.</string>
-    <string name="membership_cancel_hint">To cancel, use the link in your order email.</string>
+    <string name="membership_cancel_hint">To cancel, sign in at streampros.shop/account.</string>
     <string name="membership_trial">Free trial, ends %1$s</string>
     <string name="btn_see_plans">SEE PLANS</string>
 </resources>

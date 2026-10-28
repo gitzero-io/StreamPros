@@ -377,7 +377,7 @@
     <string name="settings_membership">Abonnement</string>
     <string name="membership_lifetime">À vie. Merci pour votre soutien !</string>
     <string name="membership_monthly">Mensuel, payé jusqu\'au %1$s.</string>
-    <string name="membership_cancel_hint">Pour résilier, utilisez le lien dans l\'e-mail de votre commande.</string>
+    <string name="membership_cancel_hint">Pour résilier, connectez-vous sur streampros.shop/account.</string>
     <string name="membership_trial">Essai gratuit, se termine le %1$s</string>
     <string name="btn_see_plans">VOIR LES OFFRES</string>
 </resources>
