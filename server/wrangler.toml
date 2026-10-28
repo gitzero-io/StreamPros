@@ -14,7 +14,7 @@ run_worker_first = true
 [[d1_databases]]
 binding = "DB"
 database_name = "streampros"
-database_id = "PASTE-THE-ID-FROM-wrangler-d1-create"
+database_id = "c3fd46e4-24e7-4ae1-b953-f450df52bb7b"
 
 [vars]
 SHOP_URL = "https://streampros.shop"
