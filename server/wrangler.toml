@@ -20,9 +20,9 @@ database_id = "c3fd46e4-24e7-4ae1-b953-f450df52bb7b"
 SHOP_URL = "https://streampros.shop"
 # From Shopify admin (README.md step 4): the two variants of the StreamPros product, and the
 # monthly subscription plan.
-MONTHLY_VARIANT_ID = ""
-LIFETIME_VARIANT_ID = ""
-MONTHLY_SELLING_PLAN_ID = ""
+MONTHLY_VARIANT_ID = "41308957048881"
+LIFETIME_VARIANT_ID = "41308957081649"
+MONTHLY_SELLING_PLAN_ID = "1704722481"
 # Public half of LICENSE_PRIVATE_KEY; the same value as streampros.licenseKey in gradle.properties.
 LICENSE_PUBLIC_KEY = "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEbMm7loJq3nDGpM7+89Vev6GP4Ru7FgT2TOVIvoXp2hk++5O7LLwKuUa0fTcLhf9o9BVOWOb5yQdUGe2NbAWBLA=="
 

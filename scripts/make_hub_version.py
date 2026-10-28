@@ -16,11 +16,11 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-import catalog_tool as tools  # noqa: E402  (shared aapt2/apksigner helpers)
+import apk_tools as tools  # noqa: E402
 
 ROOT = tools.ROOT
 DEFAULT_APK = ROOT / "app" / "build" / "outputs" / "apk" / "release" / "app-release.apk"
-DEFAULT_REPO = "https://github.com/gitzero-io/Streampros-Hub"
+DEFAULT_REPO = "https://github.com/gitzero-io/StreamPros"
 APK_NAME = "StreamPros.apk"
 PACKAGE = "com.streampros.app"
 
@@ -72,15 +72,6 @@ def main():
     print(f"{info['packageName']} {info['versionName']} ({info['versionCode']}), minSdk {info['minSdk']}")
     print(f"signer {digests[0]} ({subjects[0]})")
     print(f"Wrote {out / APK_NAME} and {out / 'hub-version.json'}")
-    # The release should carry the same signed catalog the APK ships, or Hubs keep the bundled one.
-    signed = out / "catalog.json"
-    bundled_version = tools.load_json(tools.CATALOG, {}).get("catalogVersion")
-    if not (signed.is_file() and (out / "catalog.json.sig").is_file()) or \
-            tools.load_json(signed, {}).get("catalogVersion") != bundled_version:
-        print("WARNING: dist/catalog.json(.sig) is missing or doesn't match the bundled catalog. Run "
-              "python3 scripts/sign_catalog.py, rebuild, and run this again.")
-    else:
-        print(f"dist/catalog.json + .sig match the bundled catalog (catalogVersion {bundled_version}); upload them too.")
     print(f"Upload both to a new GitHub release (tag v{info['versionName']}) in {repo}; don't reuse an old tag.")
 
 
